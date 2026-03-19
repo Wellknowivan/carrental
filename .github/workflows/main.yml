@@ -9,70 +9,66 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.10'
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
 
-    - name: Install system dependencies
-      run: |
-        sudo apt update
-        sudo apt install -y \
-          git \
-          zip \
-          unzip \
-          openjdk-17-jdk \
-          python3-pip \
-          autoconf \
-          libtool \
-          pkg-config \
-          zlib1g-dev \
-          libncurses-dev \
-          libffi-dev \
-          libssl-dev \
-          cmake \
-          wget
+      - name: Install system dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y \
+            git \
+            zip \
+            unzip \
+            openjdk-17-jdk \
+            python3-pip \
+            autoconf \
+            libtool \
+            pkg-config \
+            zlib1g-dev \
+            libncurses-dev \
+            libffi-dev \
+            libssl-dev \
+            cmake \
+            wget
 
-    - name: Install Python dependencies
-      run: |
-        pip install --upgrade pip
-        pip install cython
-        pip install buildozer
+      - name: Install Python dependencies
+        run: |
+          pip install --upgrade pip
+          pip install cython
+          pip install buildozer
 
-    - name: Accept Android SDK licenses
-      run: |
-        # Создаем папки для лицензий
-        mkdir -p ~/.android
-        mkdir -p ~/.buildozer/android/platform/android-sdk/licenses
-        
-        # Принимаем все лицензии (стандартные хеши)
-        echo "24333f8a63b6825ea9c5514f83c2829b004d1fee" > ~/.android/android-sdk-license
-        echo "84831b9409646a918e30573bab4c9c91346d8abd" > ~/.android/android-sdk-preview-license
-        echo "d975f751698a77b662f1254ddbeed3901e976f5a" > ~/.android/intel-android-extras-license
-        
-        # Копируем в папку buildozer
-        cp ~/.android/* ~/.buildozer/android/platform/android-sdk/licenses/ 2>/dev/null || true
-        
-        echo "✅ Android SDK licenses accepted"
+      - name: Accept Android SDK licenses
+        run: |
+          # Создаем папки для лицензий
+          mkdir -p ~/.android
+          mkdir -p ~/.buildozer/android/platform/android-sdk/licenses
+          
+          # Принимаем все лицензии
+          echo "24333f8a63b6825ea9c5514f83c2829b004d1fee" > ~/.android/android-sdk-license
+          echo "84831b9409646a918e30573bab4c9c91346d8abd" > ~/.android/android-sdk-preview-license
+          echo "d975f751698a77b662f1254ddbeed3901e976f5a" > ~/.android/intel-android-extras-license
+          
+          # Копируем в папку buildozer
+          cp ~/.android/* ~/.buildozer/android/platform/android-sdk/licenses/ 2>/dev/null || true
+          
+          echo "✅ Android SDK licenses accepted"
 
-    - name: Build with buildozer
-      run: |
-        # Устанавливаем переменные окружения
-        export ANDROID_HOME=~/.buildozer/android/platform/android-sdk
-        export PATH=$PATH:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools
-        
-        # Запускаем сборку (без устаревших параметров)
-        buildozer android debug
+      - name: Build with buildozer
+        run: |
+          # Устанавливаем переменные окружения
+          export ANDROID_HOME=~/.buildozer/android/platform/android-sdk
+          export PATH=$PATH:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools
+          
+          # Запускаем сборку
+          buildozer android debug
 
-    - name: Upload APK
-      uses: actions/upload-artifact@v4
-      with:
-        name: app-apk
-        path: bin/*.apk
-        retention-days: 30
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
         with:
           name: app-apk
           path: bin/*.apk
