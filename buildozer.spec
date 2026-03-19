@@ -1,31 +1,43 @@
 [app]
-# Название вашего приложения (как оно будет называться на телефоне)
+# Название приложения
 title = Прокат машинок
 
-# Уникальный идентификатор приложения (можно оставить как есть)
+# Уникальный идентификатор
 package.name = carrental
 package.domain = org.example
 
-# Папка с исходным кодом (текущая папка)
+# Исходный код
 source.dir = .
-# Какие расширения файлов включать в сборку
 source.include_exts = py,png,jpg,kv,atlas,txt,json
 
-# Версия приложения
+# Версия
 version = 1.0.0
 
-# Список необходимых библиотек (вам нужен только kivy)
+# Требуемые библиотеки
 requirements = python3,kivy
 
-# Ориентация экрана (ваше приложение вертикальное)
+# Ориентация экрана
 orientation = portrait
 
-# Отключаем полноэкранный режим, чтобы видеть строку состояния
+# Полноэкранный режим
 fullscreen = 0
 
-# (Опционально) Добавьте эти строки, если будете собирать через WSL
-# android.accept_sdk_license = True
-# android.api = 33
+# Настройки Android
+android.api = 33
+android.minapi = 21
+android.ndk = 25b
+android.sdk = 33
+android.accept_sdk_license = True
+
+# Разрешения
+android.permissions = INTERNET
+
+# Иконка (если есть)
+# icon.filename = %(source.dir)s/icon.png
+
+# Заставка (если есть)
+# presplash.filename = %(source.dir)s/splash.png
 
 [buildozer]
 log_level = 2
+warn_on_root = 1
