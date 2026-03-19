@@ -39,9 +39,29 @@ jobs:
           pip3 install cython
           pip3 install buildozer
 
+      - name: Accept Android SDK licenses
+        run: |
+          # Создаем папку для лицензий
+          mkdir -p "$ANDROID_HOME/licenses" || true
+          mkdir -p /home/runner/.android
+          
+          # Принимаем все лицензии автоматически
+          echo "24333f8a63b6825ea9c5514f83c2829b004d1fee" > "$ANDROID_HOME/licenses/android-sdk-license"
+          echo "84831b9409646a918e30573bab4c9c91346d8abd" > "$ANDROID_HOME/licenses/android-sdk-preview-license"
+          echo "d975f751698a77b662f1254ddbeed3901e976f5a" > "$ANDROID_HOME/licenses/intel-android-extras-license"
+          
+          # Копируем в .android тоже
+          cp "$ANDROID_HOME/licenses/"* /home/runner/.android/ 2>/dev/null || true
+          
+          echo "✅ Android SDK licenses accepted"
+
       - name: Build with buildozer
         run: |
-          # Убедитесь, что buildozer.spec лежит в корне
+          # Устанавливаем переменные окружения для автоматического принятия лицензий
+          export ANDROID_HOME=/home/runner/.buildozer/android/platform/android-sdk
+          export PATH=$PATH:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools
+          
+          # Запускаем сборку
           buildozer android debug
 
       - name: Upload APK
