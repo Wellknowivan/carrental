@@ -34,9 +34,7 @@ jobs:
             libffi-dev \
             libssl-dev \
             cmake \
-            wget \
-            expect \
-            android-sdk
+            wget
 
       - name: Install Python dependencies
         run: |
@@ -47,24 +45,26 @@ jobs:
       - name: Setup Android SDK
         run: |
           # Создаем структуру папок
-          mkdir -p ~/.android
-          mkdir -p ~/.buildozer/android/platform/android-sdk
-          mkdir -p ~/.buildozer/android/platform/android-sdk/cmdline-tools
+          mkdir -p $HOME/.buildozer/android/platform/android-sdk
+          cd $HOME/.buildozer/android/platform
           
           # Скачиваем command line tools
-          cd ~/.buildozer/android/platform
-          wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
+          wget -q https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
           unzip -q commandlinetools-linux-9477386_latest.zip
-          mv cmdline-tools ~/.buildozer/android/platform/android-sdk/
           
-          # Добавляем в PATH
-          export PATH=$PATH:~/.buildozer/android/platform/android-sdk/cmdline-tools/bin
+          # Правильная структура: cmdline-tools/latest/
+          mkdir -p android-sdk/cmdline-tools
+          mv cmdline-tools android-sdk/cmdline-tools/latest
           
-          # Принимаем лицензии через yes
-          yes | ~/.buildozer/android/platform/android-sdk/cmdline-tools/bin/sdkmanager --licenses
+          # Устанавливаем переменные окружения
+          export ANDROID_HOME=$HOME/.buildozer/android/platform/android-sdk
+          export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools
           
-          # Устанавливаем platform-tools
-          ~/.buildozer/android/platform/android-sdk/cmdline-tools/bin/sdkmanager "platform-tools" "platforms;android-33"
+          # Принимаем все лицензии автоматически
+          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses > /dev/null 2>&1 || true
+          
+          # Устанавливаем platform-tools и platform
+          $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-33"
           
           echo "✅ Android SDK установлен"
 
@@ -87,8 +87,8 @@ jobs:
       - name: Build with buildozer
         run: |
           # Устанавливаем переменные окружения
-          export ANDROID_HOME=~/.buildozer/android/platform/android-sdk
-          export PATH=$PATH:$ANDROID_HOME/cmdline-tools/bin:$ANDROID_HOME/platform-tools
+          export ANDROID_HOME=$HOME/.buildozer/android/platform/android-sdk
+          export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools
           
           # Запускаем сборку
           buildozer android debug
