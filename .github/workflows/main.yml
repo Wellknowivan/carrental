@@ -29,7 +29,4 @@ jobs:
         with:
           name: app-apk
           path: bin/*.apk
-        with:
-          name: app-apk
-          path: bin/*.apk
           retention-days: 30
