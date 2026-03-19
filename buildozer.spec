@@ -22,12 +22,8 @@ orientation = portrait
 # Полноэкранный режим
 fullscreen = 0
 
-# Настройки Android
-android.api = 33
-android.minapi = 21
-android.ndk = 25b
-android.sdk = 33
-android.accept_sdk_license = True
+# УБРАЛ устаревшие параметры android.api, android.sdk, android.ndk
+# Вместо них p4a (python-for-android) сам выберет подходящие версии
 
 # Разрешения
 android.permissions = INTERNET
