@@ -22,17 +22,12 @@ orientation = portrait
 # Полноэкранный режим
 fullscreen = 0
 
-# УБРАЛ устаревшие параметры android.api, android.sdk, android.ndk
-# Вместо них p4a (python-for-android) сам выберет подходящие версии
-
 # Разрешения
 android.permissions = INTERNET
 
-# Иконка (если есть)
-# icon.filename = %(source.dir)s/icon.png
-
-# Заставка (если есть)
-# presplash.filename = %(source.dir)s/splash.png
+# Указываем пути к Android SDK (buildozer сам их найдет)
+android.sdk_path = /home/runner/.buildozer/android/platform/android-sdk
+android.ndk_path = /home/runner/.buildozer/android/platform/android-ndk-r25b
 
 [buildozer]
 log_level = 2
